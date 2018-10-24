@@ -1,0 +1,7 @@
+foo:
+  prop1: "prop1 value"
+  other-name:
+   - 
+     name: "alice"
+   - 
+     name: "bob"
