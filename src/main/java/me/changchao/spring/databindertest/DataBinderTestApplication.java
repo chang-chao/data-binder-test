@@ -3,6 +3,7 @@ package me.changchao.spring.databindertest;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.springframework.beans.PropertyEditorRegistry;
@@ -30,7 +31,7 @@ public class DataBinderTestApplication {
 
 	@Bean
 	Foo foo(ConfigurableApplicationContext applicationContext, ConfigurableEnvironment env,
-			ConversionService conversionService) {
+			Optional<ConversionService> conversionService) {
 		MapConfigurationPropertySource mapSource = new MapConfigurationPropertySource();
 
 		for (Iterator<PropertySource<?>> it = env.getPropertySources().iterator(); it.hasNext();) {
@@ -50,7 +51,7 @@ public class DataBinderTestApplication {
 		Consumer<PropertyEditorRegistry> propertyEditorInitializer = applicationContext
 				.getBeanFactory()::copyRegisteredEditorsTo;
 		Binder binder = new Binder(Collections.singleton(withAliases), new PropertySourcesPlaceholdersResolver(env),
-				conversionService, propertyEditorInitializer);
+				conversionService.orElse(null), propertyEditorInitializer);
 
 		BindResult<Foo> bind = binder.bind("foo", Foo.class);
 		Map<String, Object> underlyingSource = (Map<String, Object>) mapSource.getUnderlyingSource();
